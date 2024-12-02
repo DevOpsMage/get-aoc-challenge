@@ -13,13 +13,14 @@ import argparse
 # Import rookiepy for cookie retrieval
 import rookiepy
 
+
 def fetch_day(year, day, session_cookie, parent_dir):
-    cookies = {'session': session_cookie}
+    cookies = {"session": session_cookie}
 
     # Prepare URLs
-    base_url = f'https://adventofcode.com/{year}/day/{day}'
+    base_url = f"https://adventofcode.com/{year}/day/{day}"
     description_url = base_url
-    input_url = f'{base_url}/input'
+    input_url = f"{base_url}/input"
 
     # Fetch the challenge description
     response = requests.get(description_url, cookies=cookies)
@@ -38,19 +39,23 @@ def fetch_day(year, day, session_cookie, parent_dir):
         print(f"Day {day}: Unauthorized. Invalid or expired session cookie.")
         return False
     else:
-        print(f"Day {day}: Error fetching the challenge description: {response.status_code}")
+        print(
+            f"Day {day}: Error fetching the challenge description: {response.status_code}"
+        )
         return False
 
-    soup = BeautifulSoup(response.content, 'html.parser')
+    soup = BeautifulSoup(response.content, "html.parser")
     # Find the article with class 'day-desc'
-    articles = soup.find_all('article', class_='day-desc')
+    articles = soup.find_all("article", class_="day-desc")
 
     if not articles:
-        print(f"Day {day}: Challenge not available yet or unable to find challenge description.")
+        print(
+            f"Day {day}: Challenge not available yet or unable to find challenge description."
+        )
         return False
 
     # Combine the contents of all articles (some days have two parts)
-    content = '\n'.join(str(article) for article in articles)
+    content = "\n".join(str(article) for article in articles)
 
     # Convert HTML to Markdown
     h = html2text.HTML2Text()
@@ -63,12 +68,14 @@ def fetch_day(year, day, session_cookie, parent_dir):
         puzzle_input = input_response.text.strip()
     elif input_response.status_code == 404:
         print(f"Day {day}: Puzzle input not found.")
-        puzzle_input = ''
+        puzzle_input = ""
     elif input_response.status_code == 401:
         print(f"Day {day}: Unauthorized. Invalid or expired session cookie.")
         return False
     else:
-        print(f"Day {day}: Error fetching the puzzle input: {input_response.status_code}")
+        print(
+            f"Day {day}: Error fetching the puzzle input: {input_response.status_code}"
+        )
         return False
 
     # Prepare the output directories
@@ -76,32 +83,33 @@ def fetch_day(year, day, session_cookie, parent_dir):
     os.makedirs(year_dir, exist_ok=True)
 
     # Create day directory inside the year directory
-    day_dir_name = f'Day-{day:02d}'
+    day_dir_name = f"Day-{day:02d}"
     day_dir = os.path.join(year_dir, day_dir_name)
     os.makedirs(day_dir, exist_ok=True)
 
     # Save the markdown file in the day directory
-    filename_md = f'Day{day:02d}.md'
+    filename_md = f"Day{day:02d}.md"
     file_path_md = os.path.join(day_dir, filename_md)
-    with open(file_path_md, 'w', encoding='utf-8') as f:
+    with open(file_path_md, "w", encoding="utf-8") as f:
         f.write(markdown)
 
     # Save the puzzle input in the same day directory
-    filename_input = f'Day{day:02d}_input.txt'
+    filename_input = f"Day{day:02d}_input.txt"
     file_path_input = os.path.join(day_dir, filename_input)
-    with open(file_path_input, 'w', encoding='utf-8') as f:
+    with open(file_path_input, "w", encoding="utf-8") as f:
         f.write(puzzle_input)
 
     print(f"Day {day}: Challenge and input saved to {day_dir}")
     return True
 
+
 def get_session_cookie():
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    session_file = os.path.join(script_dir, 'session.txt')
+    session_file = os.path.join(script_dir, "session.txt")
 
     # Check if session.txt exists
     if os.path.exists(session_file):
-        with open(session_file, 'r') as f:
+        with open(session_file, "r") as f:
             session_cookie = f.read().strip()
             if session_cookie:
                 return session_cookie
@@ -110,9 +118,20 @@ def get_session_cookie():
 
     # Prompt user to select their browser
     browsers = [
-        'Arc', 'Brave', 'Cachy', 'Chrome', 'Chromium', 'Edge', 'Firefox',
-        'Internet Explorer', 'LibreWolf', 'Opera', 'Opera GX', 'Safari',
-        'Vivaldi', 'Zen'
+        "Arc",
+        "Brave",
+        "Cachy",
+        "Chrome",
+        "Chromium",
+        "Edge",
+        "Firefox",
+        "Internet Explorer",
+        "LibreWolf",
+        "Opera",
+        "Opera GX",
+        "Safari",
+        "Vivaldi",
+        "Zen",
     ]
 
     print("Attempting to retrieve session cookie from your browser using rookiepy.")
@@ -133,33 +152,33 @@ def get_session_cookie():
     # Attempt to get cookies from the selected browser
     try:
         # Define function to call based on browser name
-        if browser_name == 'Arc':
+        if browser_name == "Arc":
             cookies = rookiepy.arc(["adventofcode.com"])
-        elif browser_name == 'Brave':
+        elif browser_name == "Brave":
             cookies = rookiepy.brave(["adventofcode.com"])
-        elif browser_name == 'Cachy':
+        elif browser_name == "Cachy":
             cookies = rookiepy.cachy(["adventofcode.com"])
-        elif browser_name == 'Chrome':
+        elif browser_name == "Chrome":
             cookies = rookiepy.chrome(["adventofcode.com"])
-        elif browser_name == 'Chromium':
+        elif browser_name == "Chromium":
             cookies = rookiepy.chromium(["adventofcode.com"])
-        elif browser_name == 'Edge':
+        elif browser_name == "Edge":
             cookies = rookiepy.edge(["adventofcode.com"])
-        elif browser_name == 'Firefox':
+        elif browser_name == "Firefox":
             cookies = rookiepy.firefox(["adventofcode.com"])
-        elif browser_name == 'Internet Explorer':
+        elif browser_name == "Internet Explorer":
             cookies = rookiepy.ie(["adventofcode.com"])
-        elif browser_name == 'LibreWolf':
+        elif browser_name == "LibreWolf":
             cookies = rookiepy.librewolf(["adventofcode.com"])
-        elif browser_name == 'Opera':
+        elif browser_name == "Opera":
             cookies = rookiepy.opera(["adventofcode.com"])
-        elif browser_name == 'Opera GX':
+        elif browser_name == "Opera GX":
             cookies = rookiepy.operagx(["adventofcode.com"])
-        elif browser_name == 'Safari':
+        elif browser_name == "Safari":
             cookies = rookiepy.safari(["adventofcode.com"])
-        elif browser_name == 'Vivaldi':
+        elif browser_name == "Vivaldi":
             cookies = rookiepy.vivaldi(["adventofcode.com"])
-        elif browser_name == 'Zen':
+        elif browser_name == "Zen":
             cookies = rookiepy.zen(["adventofcode.com"])
         else:
             print("Unsupported browser selected.")
@@ -169,13 +188,13 @@ def get_session_cookie():
         session_cookie = None
         for cookie in cookies:
             print(cookie)
-            if cookie['name'] == 'session':
-                session_cookie = cookie['value']
+            if cookie["name"] == "session":
+                session_cookie = cookie["value"]
                 break
 
         if session_cookie:
             # Save to session.txt
-            with open(session_file, 'w') as f:
+            with open(session_file, "w") as f:
                 f.write(session_cookie)
             print("Session cookie retrieved and saved to session.txt.")
             return session_cookie
@@ -187,8 +206,14 @@ def get_session_cookie():
         error_message = str(e).lower()
         if "admin" in error_message or "permission" in error_message:
             print(f"Permission error while accessing browser cookies: {e}")
-            response = input("Do you want to rerun the script with administrative privileges? (yes/no): ").strip().lower()
-            if response in ['yes', 'y']:
+            response = (
+                input(
+                    "Do you want to rerun the script with administrative privileges? (yes/no): "
+                )
+                .strip()
+                .lower()
+            )
+            if response in ["yes", "y"]:
                 run_as_admin()
             else:
                 print("Cannot proceed without necessary permissions.")
@@ -197,11 +222,12 @@ def get_session_cookie():
             print(f"An error occurred while retrieving cookies: {e}")
             return prompt_for_session_cookie(session_file)
 
+
 def prompt_for_session_cookie(session_file):
     print("Automated attempt to retrieve the session cookie was unsuccessful.")
     session_cookie = input("Please enter your session cookie value: ").strip()
     if session_cookie:
-        with open(session_file, 'w') as f:
+        with open(session_file, "w") as f:
             f.write(session_cookie)
         print("Session cookie saved to session.txt.")
         return session_cookie
@@ -209,18 +235,22 @@ def prompt_for_session_cookie(session_file):
         print("No session cookie provided. Exiting.")
         sys.exit(1)
 
+
 def run_as_admin():
     """Relaunch the script with administrative privileges."""
     print("Attempting to relaunch the script with administrative privileges...")
 
     try:
-        if sys.platform.startswith('win'):
+        if sys.platform.startswith("win"):
             # Windows
             import ctypes
+
             script = os.path.abspath(__file__)
-            params = ' '.join(f'"{arg}"' if ' ' in arg else arg for arg in sys.argv[1:])
+            params = " ".join(f'"{arg}"' if " " in arg else arg for arg in sys.argv[1:])
             # ShellExecuteW returns >32 if successful
-            result = ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, f'"{script}" {params}', None, 1)
+            result = ctypes.windll.shell32.ShellExecuteW(
+                None, "runas", sys.executable, f'"{script}" {params}', None, 1
+            )
             if result <= 32:
                 print("Failed to elevate privileges.")
                 sys.exit(1)
@@ -229,7 +259,7 @@ def run_as_admin():
         else:
             # Unix-like systems
             script = os.path.abspath(__file__)
-            params = ' '.join(sys.argv[1:])
+            params = " ".join(sys.argv[1:])
             # Check if already running as root
             if os.geteuid() == 0:
                 print("Already running with administrative privileges.")
@@ -237,7 +267,7 @@ def run_as_admin():
             else:
                 # Relaunch with sudo
                 try:
-                    os.execvp('sudo', ['sudo', sys.executable, script] + sys.argv[1:])
+                    os.execvp("sudo", ["sudo", sys.executable, script] + sys.argv[1:])
                 except Exception as e:
                     print(f"Failed to elevate privileges: {e}")
                     sys.exit(1)
@@ -245,12 +275,25 @@ def run_as_admin():
         print(f"Failed to relaunch as admin: {e}")
         sys.exit(1)
 
+
 def main():
     # Parse command-line arguments
-    parser = argparse.ArgumentParser(description='Fetch Advent of Code challenge and input.')
-    parser.add_argument('--year', type=int, help='Year of the Advent of Code event (default: current year)')
-    parser.add_argument('--day', type=int, help='Day of the challenge (default: current day)')
-    parser.add_argument('--all', action='store_true', help='Fetch all available days for the specified year')
+    parser = argparse.ArgumentParser(
+        description="Fetch Advent of Code challenge and input."
+    )
+    parser.add_argument(
+        "--year",
+        type=int,
+        help="Year of the Advent of Code event (default: current year)",
+    )
+    parser.add_argument(
+        "--day", type=int, help="Day of the challenge (default: current day)"
+    )
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Fetch all available days for the specified year",
+    )
     args = parser.parse_args()
 
     # Use provided year or current year
@@ -290,12 +333,13 @@ def main():
 
         # Fetch the specified day
         success = fetch_day(year, day, session_cookie, parent_dir)
-        if not success and 'session.txt' in locals():
+        if not success and "session.txt" in locals():
             # Invalid session cookie, prompt user to update it
             print("Your session cookie may be invalid or expired.")
-            os.remove(os.path.join(script_dir, 'session.txt'))
+            os.remove(os.path.join(script_dir, "session.txt"))
             session_cookie = get_session_cookie()
             fetch_day(year, day, session_cookie, parent_dir)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
