@@ -79,7 +79,7 @@ def fetch_day(year, day, session_cookie, parent_dir):
         return False
 
     # Prepare the output directories
-    year_dir = os.path.join(parent_dir, str(year))
+    year_dir = os.path.join(parent_dir, "..", str(year))
     os.makedirs(year_dir, exist_ok=True)
 
     # Create day directory inside the year directory
